@@ -1,0 +1,76 @@
+.product-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  transition: color 0.2s;
+}
+.back-link:hover {
+  color: var(--primary);
+}
+
+.alert-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #FFFBEB;
+  color: var(--warning);
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid #FEF3C7;
+  font-weight: 500;
+}
+
+.history-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.summary-card .label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.summary-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.text-success {
+  color: var(--success) !important;
+}
+
+.chart-container h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.chart-wrapper {
+  margin-top: 1rem;
+  margin-left: -20px; /* offset recharts default left padding to align with title */
+}

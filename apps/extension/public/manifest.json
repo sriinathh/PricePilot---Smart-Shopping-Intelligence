@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "PricePilot",
+  "version": "1.0.0",
+  "description": "Smart Shopping Intelligence. Never miss a better price.",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "assets/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.com/*", "*://*.amazon.in/*", "*://*.walmart.com/*", "*://*.ebay.com/*"],
+      "js": ["assets/content.js"]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "alarms",
+    "activeTab",
+    "notifications"
+  ],
+  "host_permissions": [
+    "*://*.amazon.com/*",
+    "*://*.amazon.in/*",
+    "*://*.walmart.com/*",
+    "*://*.ebay.com/*"
+  ]
+}

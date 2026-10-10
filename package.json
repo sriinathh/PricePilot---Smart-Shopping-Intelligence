@@ -1,0 +1,23 @@
+{
+  "name": "pricepilot",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "dev:dashboard": "npm run dev --workspace=apps/dashboard",
+    "dev:extension": "npm run dev --workspace=apps/extension",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:dashboard\" \"npm run dev:extension\"",
+    "build:backend": "npm run build --workspace=apps/backend",
+    "build:dashboard": "npm run build --workspace=apps/dashboard",
+    "build:extension": "npm run build --workspace=apps/extension",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}
