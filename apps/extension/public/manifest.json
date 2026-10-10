@@ -12,7 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.amazon.com/*", "*://*.amazon.in/*", "*://*.walmart.com/*", "*://*.ebay.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["assets/content.js"]
     }
   ],
@@ -23,9 +23,6 @@
     "notifications"
   ],
   "host_permissions": [
-    "*://*.amazon.com/*",
-    "*://*.amazon.in/*",
-    "*://*.walmart.com/*",
-    "*://*.ebay.com/*"
+    "<all_urls>"
   ]
 }

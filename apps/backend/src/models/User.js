@@ -1,29 +1,31 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
-  preferences: {
-    currency: { type: String, default: 'USD' },
-    locale: { type: String, default: 'en-US' }
-  },
-  notificationSettings: {
-    emailAlerts: { type: Boolean, default: true },
-    pushAlerts: { type: Boolean, default: false }
+const User = sequelize.define('User', {
+  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  name: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  password: { type: DataTypes.STRING, allowNull: false },
+  role: { type: DataTypes.STRING, defaultValue: 'user' },
+  currency: { type: DataTypes.STRING, defaultValue: 'USD' }
+}, {
+  hooks: {
+    beforeCreate: async (user) => {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    }
   }
-}, { timestamps: true });
-
-// Pre-save hook to hash password
-userSchema.pre('save', async function() {
-  if (!this.isModified('passwordHash')) return;
-  const salt = await bcrypt.genSalt(10);
-  this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
 });
 
-userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.passwordHash);
+User.prototype.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

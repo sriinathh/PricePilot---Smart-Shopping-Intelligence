@@ -1,13 +1,20 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
+const path = require('path');
+
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: path.join(__dirname, '../../database.sqlite'),
+  logging: false
+});
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pricepilot');
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await sequelize.authenticate();
+    console.log('SQLite Database Connected Successfully');
   } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
+    console.error('Unable to connect to the database:', error.message);
     process.exit(1);
   }
 };
 
-module.exports = connectDB;
+module.exports = { sequelize, connectDB };

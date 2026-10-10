@@ -1,18 +1,14 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const productSchema = new mongoose.Schema({
-  url: { type: String, required: true, unique: true },
-  title: { type: String, required: true },
-  brand: { type: String },
-  identifier: { type: String }, // GTIN/ASIN/SKU
-  imageUrl: { type: String },
-  currency: { type: String, required: true, default: 'USD' },
-  source: { type: String, required: true }, // domain/store
-  extractionStatus: { 
-    type: String, 
-    enum: ['pending', 'success', 'failed'], 
-    default: 'pending' 
-  },
-}, { timestamps: true });
+const Product = sequelize.define('Product', {
+  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  title: { type: DataTypes.STRING, allowNull: false },
+  url: { type: DataTypes.STRING, allowNull: false, unique: true },
+  domain: { type: DataTypes.STRING },
+  imageUrl: { type: DataTypes.STRING },
+  identifier: { type: DataTypes.STRING },
+  brand: { type: DataTypes.STRING }
+});
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = Product;

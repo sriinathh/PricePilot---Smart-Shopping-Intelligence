@@ -1,13 +1,11 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const watchlistItemSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  targetPrice: { type: Number },
-  trackingStatus: { type: String, enum: ['active', 'paused', 'archived'], default: 'active' }
-}, { timestamps: true });
+const WatchlistItem = sequelize.define('WatchlistItem', {
+  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  userId: { type: DataTypes.UUID, allowNull: false },
+  productId: { type: DataTypes.UUID, allowNull: false },
+  targetPrice: { type: DataTypes.FLOAT, defaultValue: 0 }
+});
 
-// Ensure a user can only watch a product once
-watchlistItemSchema.index({ user: 1, product: 1 }, { unique: true });
-
-module.exports = mongoose.model('WatchlistItem', watchlistItemSchema);
+module.exports = WatchlistItem;

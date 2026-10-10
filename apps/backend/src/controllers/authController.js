@@ -1,73 +1,48 @@
+const { User } = require('../models');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret', {
-    expiresIn: '30d',
-  });
+const sendTokenResponse = (user, statusCode, res) => {
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'secret', { expiresIn: '30d' });
+  res.status(statusCode).json({ success: true, token, data: { id: user.id, name: user.name, email: user.email, currency: user.currency } });
 };
 
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
-      return res.status(400).json({ success: false, error: 'User already exists' });
-    }
-
-    const user = await User.create({ name, email, passwordHash: password }); // Pre-save hooks will hash this
-    res.status(201).json({
-      success: true,
-      token: generateToken(user._id),
-      user: { id: user._id, name: user.name, email: user.email }
-    });
+    const user = await User.create({ name, email, password });
+    sendTokenResponse(user, 201, res);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    if (!email || !password) return res.status(400).json({ success: false, error: 'Please provide email and password' });
 
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ success: false, error: 'Invalid credentials' });
-    }
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(401).json({ success: false, error: 'Invalid credentials' });
 
-    res.status(200).json({
-      success: true,
-      token: generateToken(user._id),
-      user: { id: user._id, name: user.name, email: user.email }
-    });
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) return res.status(401).json({ success: false, error: 'Invalid credentials' });
+
+    sendTokenResponse(user, 200, res);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
 exports.getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-passwordHash');
-    res.status(200).json({ success: true, data: user });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+  const user = await User.findByPk(req.user.id);
+  res.status(200).json({ success: true, data: { name: user.name, email: user.email, preferences: { currency: user.currency } } });
 };
 
 exports.updateMe = async (req, res) => {
   try {
     const { name, currency } = req.body;
-    const user = await User.findById(req.user.id);
-    
-    if (name) user.name = name;
-    if (currency) {
-      if (!user.preferences) user.preferences = {};
-      user.preferences.currency = currency;
-    }
-    
-    await user.save();
-    res.status(200).json({ success: true, data: user });
+    await User.update({ name, currency }, { where: { id: req.user.id } });
+    res.status(200).json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

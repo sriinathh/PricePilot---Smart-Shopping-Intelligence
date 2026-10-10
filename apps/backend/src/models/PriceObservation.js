@@ -1,14 +1,13 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const priceObservationSchema = new mongoose.Schema({
-  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  priceAmount: { type: Number, required: true },
-  currency: { type: String, required: true },
-  availability: { type: Boolean, default: true },
-  observedAt: { type: Date, default: Date.now },
-  sourceType: { type: String, enum: ['browser_extension', 'backend_job', 'manual'], required: true },
-  sourceReference: { type: String }, // e.g. user ID if manual or extension
-  validationStatus: { type: String, enum: ['unverified', 'verified', 'flagged'], default: 'unverified' }
+const PriceObservation = sequelize.define('PriceObservation', {
+  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  productId: { type: DataTypes.UUID, allowNull: false },
+  price: { type: DataTypes.FLOAT, allowNull: false },
+  currency: { type: DataTypes.STRING, defaultValue: 'USD' },
+  isAvailable: { type: DataTypes.BOOLEAN, defaultValue: true },
+  condition: { type: DataTypes.STRING, defaultValue: 'new' }
 });
 
-module.exports = mongoose.model('PriceObservation', priceObservationSchema);
+module.exports = PriceObservation;

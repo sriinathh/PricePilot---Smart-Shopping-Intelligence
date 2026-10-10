@@ -1,13 +1,14 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const priceAlertSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  watchlistItem: { type: mongoose.Schema.Types.ObjectId, ref: 'WatchlistItem', required: true },
-  alertType: { type: String, enum: ['target_reached', 'price_drop'], default: 'target_reached' },
-  targetPrice: { type: Number },
-  triggeringObservation: { type: mongoose.Schema.Types.ObjectId, ref: 'PriceObservation' },
-  status: { type: String, enum: ['pending', 'triggered', 'delivered', 'failed'], default: 'pending' },
-  deliveredAt: { type: Date }
-}, { timestamps: true });
+const PriceAlert = sequelize.define('PriceAlert', {
+  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  userId: { type: DataTypes.UUID, allowNull: false },
+  watchlistItemId: { type: DataTypes.UUID, allowNull: false },
+  alertType: { type: DataTypes.STRING, defaultValue: 'target_reached' },
+  targetPrice: { type: DataTypes.FLOAT },
+  status: { type: DataTypes.STRING, defaultValue: 'pending' },
+  deliveredAt: { type: DataTypes.DATE }
+});
 
-module.exports = mongoose.model('PriceAlert', priceAlertSchema);
+module.exports = PriceAlert;
