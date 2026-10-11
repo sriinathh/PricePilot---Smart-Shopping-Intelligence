@@ -6,24 +6,22 @@ PricePilot helps users make informed online shopping decisions by detecting prod
 
 - `apps/extension`: Chrome/Edge Browser Extension (React + Vite + MV3)
 - `apps/dashboard`: Web Dashboard (React + Vite + Recharts)
-- `apps/backend`: Node.js/Express Backend with MongoDB
+- `apps/backend`: Node.js/Express Backend with SQLite (Sequelize)
 - `packages/shared`: Shared types and utilities
 
 ## Deployment & Setup
 
 ### Prerequisites
 - Node.js (v18+)
-- MongoDB (Local or Atlas cluster)
 
 ### Environment Variables
 Copy `.env.example` to `.env` inside `apps/backend` and set the variables:
 ```bash
-MONGODB_URI=mongodb://localhost:27017/pricepilot
+PORT=3000
+NODE_ENV=production
 JWT_SECRET=your_secure_random_string
 CLIENT_ORIGIN=http://localhost:5173
 API_BASE_URL=http://localhost:3000/api/v1
-PORT=3000
-NODE_ENV=production
 ```
 
 ### Installation and Running locally

@@ -9,23 +9,23 @@ You can send this zip file to anyone. They just need to extract it and load the 
 
 To make PricePilot work online, you need to deploy the Backend API and the Frontend Dashboard.
 
-### Step 1: Database (MongoDB Atlas)
-Currently, PricePilot uses MongoDB. The easiest way to host this for free is **MongoDB Atlas**.
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create a free cluster.
-2. Get your Connection String (e.g., `mongodb+srv://<user>:<password>@cluster0.mongodb.net/pricepilot`).
-3. You will set this as your `MONGO_URI` environment variable when deploying the backend.
+### Step 1: Database (SQLite / Embedded)
+PricePilot utilizes an embedded SQLite database (`database.sqlite`) managed via Sequelize with automatic schema sync (`alter: true`).
+- **No external database cluster (like MongoDB Atlas) is required!**
+- For persistent production deployments (e.g., Render, Railway, Fly.io, or VPS), attach a persistent disk volume to retain data between redeploys, or run directly.
 
-### Step 2: Deploy Backend (Render or Railway)
-We recommend deploying the Node.js backend on **Render.com** (Free tier available).
+### Step 2: Deploy Backend (Render, Railway, or VPS)
+We recommend deploying the Node.js backend on **Render.com** or **Railway.app** (Free / low-cost tiers available).
 1. Push your PricePilot code to GitHub.
-2. On Render, create a new "Web Service" and connect your GitHub repo.
+2. On Render/Railway, create a new "Web Service" and connect your GitHub repo.
 3. **Root Directory:** `apps/backend`
 4. **Build Command:** `npm install`
 5. **Start Command:** `npm start`
 6. **Environment Variables:**
-   - `MONGO_URI`: Your Atlas connection string
    - `JWT_SECRET`: A secure random string (e.g., `supersecretjwtkey`)
    - `PORT`: `3000`
+   - `CLIENT_ORIGIN`: Your deployed dashboard URL (e.g., `https://pricepilot.vercel.app`)
+   - `NODE_ENV`: `production`
 
 ### Step 3: Deploy Frontend Dashboard (Vercel)
 Vercel is perfect for deploying Vite React apps.

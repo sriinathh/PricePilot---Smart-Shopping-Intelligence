@@ -4,3 +4,6 @@ dist/
 build/
 .DS_Store
 coverage/
+*.sqlite
+*.sqlite3
+*.db
